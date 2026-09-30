@@ -61,3 +61,13 @@ body{background:var(--bg)}
 
 /* ---------- Scrollbar ---------- */
 :root[data-theme=dark]{scrollbar-color:#2A2A3D transparent}
+
+/* ---------- 404 ---------- */
+.nf{min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;background:var(--bg,#0B0B14);color:var(--ink,#F5F5FA)}
+.nf-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,#7C5CFF59,#FF4F9A26 45%,transparent 70%);filter:blur(40px);animation:nfPulse 7s ease-in-out infinite}
+.nf-card{position:relative;max-width:520px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:repolRise .6s cubic-bezier(.2,.8,.2,1) both}
+.nf-code{font-size:clamp(96px,22vw,168px);font-weight:900;line-height:1;background:linear-gradient(135deg,#B8A6FF,#7C5CFF 45%,#FF4F9A);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 12px 40px #7C5CFF66);margin-top:18px}
+.nf h1{font-size:clamp(22px,4vw,30px);font-weight:800}
+.nf p{color:var(--muted,#A3A3BA);line-height:2;font-size:14px}
+.nf-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+@keyframes nfPulse{50%{transform:scale(1.12);opacity:.8}}
