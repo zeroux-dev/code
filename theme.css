@@ -1,0 +1,63 @@
+/* Repol design tokens + polish layer (loads after dark.css) */
+:root[data-theme=dark]{
+  --bg:#0B0B14;--panel:#14141F;--soft:#1C1C2B;--line:#2A2A3D;--ink:#F5F5FA;--muted:#A3A3BA;
+  --accent:#7C5CFF;--accent-ink:#B8A6FF;--input:#14141F;--hover:#1C1C2B;
+  --brand-grad:linear-gradient(90deg,#7C5CFF,#FF4F9A);--glow:0 8px 32px #7C5CFF73;
+  color-scheme:dark}
+:root{--brand-grad:linear-gradient(90deg,#7C5CFF,#FF4F9A);--glow:0 8px 28px #7C5CFF40}
+html,body{font-family:Vazirmatn,Tahoma,sans-serif;font-feature-settings:"ss01"}
+
+/* ---------- Ambient background ---------- */
+body{background:var(--bg)}
+:root[data-theme=dark] body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(900px 500px at 85% -10%,#7C5CFF26,transparent 60%),radial-gradient(700px 420px at 0% 100%,#FF4F9A1A,transparent 60%)}
+
+/* ---------- Brand: gradient primary actions with glow ---------- */
+:root[data-theme=dark] .btn.primary,.btn.primary{background:var(--brand-grad);border-color:transparent;color:#fff;box-shadow:var(--glow);position:relative;overflow:hidden}
+.btn.primary:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 10px 36px #7C5CFF66}
+.btn.primary:active{transform:translateY(0) scale(.98)}
+.btn.primary:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,#ffffff40 50%,transparent 65%);transform:translateX(-120%);transition:transform .7s}
+.btn.primary:hover:after{transform:translateX(120%)}
+.brand-mark{background:var(--brand-grad);box-shadow:var(--glow)}
+.brand-word i{color:#FF4F9A}
+
+/* ---------- Surfaces ---------- */
+:root[data-theme=dark] .card,:root[data-theme=dark] .stat{background:var(--panel);border-color:var(--line);border-radius:20px}
+:root[data-theme=dark] .stat,:root[data-theme=dark] .card{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s}
+:root[data-theme=dark] .stat:hover{transform:translateY(-3px);border-color:#7C5CFF66;box-shadow:0 14px 40px #7C5CFF1f}
+:root[data-theme=dark] .sidebar{background:var(--panel);border-color:var(--line)}
+:root[data-theme=dark] .topbar{background:#0B0B14cc;border-color:var(--line)}
+:root[data-theme=dark] .nav button.active{background:linear-gradient(270deg,#7C5CFF38,transparent);color:#fff}
+:root[data-theme=dark] .nav button.active:before{background:var(--brand-grad);width:3px}
+:root[data-theme=dark] .nav button.active svg{color:#B8A6FF}
+.nav button{transition:background .2s,color .2s,padding .2s}
+:root[data-theme=dark] .nav button:hover{background:var(--soft);color:var(--ink)}
+:root[data-theme=dark] .stat-icon{background:#7C5CFF26;color:#B8A6FF;border-radius:12px}
+:root[data-theme=dark] input,:root[data-theme=dark] textarea,:root[data-theme=dark] select{background:var(--input);border-color:var(--line);border-radius:14px}
+:root[data-theme=dark] input:focus,:root[data-theme=dark] textarea:focus,:root[data-theme=dark] select:focus{border-color:#7C5CFF;box-shadow:0 0 0 4px #7C5CFF26}
+:root[data-theme=dark] .auth-tabs button.active{background:var(--soft);color:#fff}
+
+/* ---------- Charts ---------- */
+:root[data-theme=dark] .chart .area{fill:url(#areaGrad);fill:#7C5CFF33}
+:root[data-theme=dark] .chart .curve{stroke:#9B7BFF;stroke-width:3}
+:root[data-theme=dark] .chart .curve2{stroke:#FF4F9A99}
+:root[data-theme=dark] .chart line{stroke:var(--line);stroke-dasharray:2 6}
+:root[data-theme=dark] .chart text{fill:#8b8ba3}
+
+/* ---------- Auth ---------- */
+.auth-story{background-color:#0f0a22;background-image:radial-gradient(600px 400px at 15% 20%,#7C5CFF8c,transparent 65%),radial-gradient(500px 420px at 90% 95%,#FF4F9A59,transparent 62%),radial-gradient(360px 260px at 20% 100%,#FFB54730,transparent 65%)}
+.story-heading h1 em{background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.float-card{animation:repolFloat 6s ease-in-out infinite}
+.float-card.engine{animation-delay:-2s;background:linear-gradient(135deg,#7C5CFFe6,#9B6BFFe6)}
+.float-card.reply{animation-delay:-4s}
+@keyframes repolFloat{50%{translate:0 -8px}}
+
+/* ---------- Entrance motion ---------- */
+.content>*,.auth-form-wrap>*{animation:repolRise .55s cubic-bezier(.2,.8,.2,1) both}
+.content>*:nth-child(2){animation-delay:.05s}.content>*:nth-child(3){animation-delay:.1s}.content>*:nth-child(4){animation-delay:.15s}.content>*:nth-child(5){animation-delay:.2s}
+.stats .stat:nth-child(2){animation-delay:.08s}.stats .stat:nth-child(3){animation-delay:.16s}.stats .stat:nth-child(4){animation-delay:.24s}
+@keyframes repolRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* ---------- Scrollbar ---------- */
+:root[data-theme=dark]{scrollbar-color:#2A2A3D transparent}

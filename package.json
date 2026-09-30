@@ -1,0 +1,6 @@
+{
+  "name": "repol",
+  "private": true,
+  "scripts": { "build:dark": "node tools/make-dark.js" },
+  "devDependencies": { "postcss": "^8.4.0" }
+}
