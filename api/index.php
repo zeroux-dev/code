@@ -2,6 +2,19 @@
 declare(strict_types=1);
 
 // Repol API front controller. Every /api/* request lands here (see .htaccess).
+
+/** Setup problems get a precise, secret-free message so the owner can fix them from the browser. */
+function repol_setup_error(string $msg, int $code = 503): void
+{
+    http_response_code($code);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['error' => $msg, 'setup' => true], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+if (PHP_VERSION_ID < 80100) repol_setup_error('نسخه‌ی PHP سرور ' . PHP_VERSION . ' است. در cPanel → MultiPHP Manager نسخه‌ی 8.1 یا بالاتر را برای repol.ir انتخاب کن.');
+foreach (['pdo_mysql', 'curl', 'mbstring', 'sodium', 'fileinfo'] as $ext) {
+    if (!extension_loaded($ext)) repol_setup_error("افزونه‌ی PHP «{$ext}» روی سرور فعال نیست. در cPanel → Select PHP Version → Extensions تیکش را بزن.");
+}
 foreach (['Core', 'Mailer', 'Auth', 'Billing', 'Tron', 'Instagram', 'Engine', 'Workspace', 'Admin'] as $f) require __DIR__ . "/src/$f.php";
 
 $dev = false;
@@ -18,7 +31,15 @@ try {
     // Public endpoints that must not touch the session.
     if ($path === '/webhook/instagram') $method === 'GET' ? Instagram::verifyWebhook() : Instagram::webhook();
     if (preg_match('#^/f/([0-9a-f]{48})(/.*)?$#', $path, $m)) Workspace::publicFile($m[1]);
-    if ($path === '/health') Http::json(['ok' => true, 'db' => (bool)Db::value('SELECT 1'), 'time' => Util::now()]);
+    if ($path === '/health') {
+        $h = ['php' => PHP_VERSION, 'config' => Config::source()];
+        try { Db::value('SELECT 1'); $h['db'] = 'ok'; } catch (Throwable $e) { $h['db'] = 'error ' . $e->getCode(); }
+        $dir = rtrim((string)Config::get('storage_dir'), '/');
+        $h['storage'] = (is_dir($dir) ? is_writable($dir) : is_writable(dirname($dir))) ? 'ok' : 'not writable: ' . $dir;
+        $h['mail'] = Mailer::ready() ? 'configured' : 'not configured';
+        $h['ok'] = $h['db'] === 'ok' && $h['storage'] === 'ok';
+        Http::json($h);
+    }
 
     Auth::start();
     if ($method !== 'GET') Auth::guardWrite();
@@ -83,5 +104,10 @@ try {
     Http::json(['error' => $e->getMessage()], $e->status);
 } catch (Throwable $e) {
     error_log('[repol] ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+    Config::logError($e);
+    if ($e->getMessage() === 'config missing') repol_setup_error('فایل تنظیمات پیدا نشد. فایل repol-config.php را در ' . dirname(__DIR__, 2) . '/ (یک پوشه بالاتر از public_html) یا فایل config.php را داخل پوشه‌ی api بگذار.');
+    if ($e instanceof PDOException && !in_array((int)$e->getCode(), [1044, 1045, 1049, 2002, 2005, 2054], true) && !str_contains($e->getMessage(), '[2002]')) repol_setup_error('خطای دیتابیس: ' . mb_substr($e->getMessage(), 0, 240) . ' — نسخه‌ی MySQL باید 5.7 یا MariaDB 10.3 به بالا باشد.', 500);
+    if ($e instanceof PDOException) repol_setup_error('اتصال به دیتابیس برقرار نشد (کد ' . $e->getCode() . '). نام دیتابیس، نام کاربری و رمز را در فایل تنظیمات با cPanel → MySQL Databases مقایسه کن و مطمئن شو کاربر به دیتابیس اضافه شده و ALL PRIVILEGES دارد.');
+    if ($e instanceof ParseError || $e instanceof Error && str_contains($e->getMessage(), 'syntax')) repol_setup_error('فایل تنظیمات خطای نگارشی دارد: ' . $e->getMessage() . ' (خط ' . $e->getLine() . ')');
     Http::json(['error' => $dev ? $e->getMessage() : 'خطای غیرمنتظره در سرور رخ داد. دوباره امتحان کن.'], 500);
 }

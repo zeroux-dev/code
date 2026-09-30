@@ -15,9 +15,31 @@ final class Config
             dirname(__DIR__) . '/config.php',
         ];
         foreach ($candidates as $file) {
-            if ($file && is_file($file)) return self::$c = require $file;
+            if ($file && is_file($file)) {
+                $c = require $file;
+                if (!is_array($c)) throw new RuntimeException('config missing');
+                self::$file = $file;
+                return self::$c = $c;
+            }
         }
         throw new RuntimeException('config missing');
+    }
+
+    private static ?string $file = null;
+
+    /** Where the config was found (for the health check); never the contents. */
+    public static function source(): string
+    {
+        self::all();
+        return str_contains((string)self::$file, 'public_html') ? 'api/config.php' : 'outside public_html';
+    }
+
+    /** Keep a private error log next to the config so the owner can read it in File Manager. */
+    public static function logError(Throwable $e): void
+    {
+        $dir = self::$file ? dirname(self::$file) : null;
+        if (!$dir || !is_writable($dir)) return;
+        @file_put_contents($dir . '/repol-error.log', date('Y-m-d H:i:s') . ' ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . basename($e->getFile()) . ':' . $e->getLine() . "\n", FILE_APPEND);
     }
 
     public static function get(string $path, mixed $default = null): mixed

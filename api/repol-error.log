@@ -1,0 +1,1 @@
+2026-10-01 03:26:31 PDOException: SQLSTATE[HY000] [1045] Access denied for user 'repol'@'localhost' (using password: YES) @ Core.php:64
