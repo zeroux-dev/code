@@ -1,0 +1,9 @@
+# All /api/* requests go to the front controller.
+Options -Indexes
+RewriteEngine On
+RewriteRule ^(config\.php|config\.sample\.php|src/|templates/|tests/|schema\.sql|cron\.php) - [F,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L,QSA]
+<Files "config.php">
+  Require all denied
+</Files>

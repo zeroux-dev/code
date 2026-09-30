@@ -1,0 +1,11 @@
+body{margin:0;background:#0B0B14;color:#E9E9F2;font:15px/2.1 Vazirmatn,Tahoma,sans-serif}
+main{max-width:760px;margin:0 auto;padding:56px 20px 80px}
+a{color:#B8A6FF}
+.brand{display:inline-flex;gap:10px;align-items:center;text-decoration:none;color:#fff;font:800 24px Estedad,Vazirmatn,sans-serif;direction:ltr}
+.brand i{font-style:normal;color:#FF4F9A}
+h1{font:800 clamp(26px,4vw,34px)/1.6 Estedad,Vazirmatn,sans-serif;margin:34px 0 6px;color:#fff}
+h2{font:700 19px/1.8 Estedad,Vazirmatn,sans-serif;margin:34px 0 4px;color:#fff}
+p,li{color:#B7B7CC}
+.meta{color:#8B8BA3;font-size:13px}
+.box{border:1px solid #2A2A3D;background:#14141F;border-radius:18px;padding:18px 22px;margin-top:22px}
+.en{direction:ltr;text-align:left;font-family:system-ui,sans-serif;font-size:14px;line-height:1.8}

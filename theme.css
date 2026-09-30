@@ -151,3 +151,23 @@ h1,h2{letter-spacing:-.01em;text-wrap:balance}
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
 }
 :root[data-motion=off] .flow-scene>*,:root[data-motion=off] .stats .stat{animation:none!important}
+
+/* =====================================================================
+   Live layer (live.js): scenario gate, inbox, admin payment settings
+   ===================================================================== */
+.live-rule-extra{display:grid;gap:2px}
+.gate-toggle{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft);align-items:flex-start!important;transition:border-color .2s,background .2s}
+.gate-toggle:has(input:checked){border-color:#7C5CFF88;background:linear-gradient(135deg,#7C5CFF1f,transparent)}
+.gate-toggle span{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center}
+.gate-toggle span svg{color:#B8A6FF;grid-row:span 2}
+.gate-toggle b{font-size:13px;font-weight:700}
+.gate-toggle small{grid-column:2;color:var(--muted);font-size:11px}
+.gate-fields[hidden],.comment-fields[hidden]{display:none}
+.trend.down{color:#F87171!important;background:#F871711f!important}
+.btn.danger{color:#F87171!important}
+.btn.danger:hover{background:#F8717114!important}
+.otp-input{font-size:26px!important;letter-spacing:10px;text-align:center;font-family:Estedad,Vazirmatn,sans-serif;height:60px!important}
+.live-biz{margin-top:16px}
+.live-biz h3{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.file-meta>span{display:flex;gap:6px}
+.chat-compose .btn{padding:0 14px}
