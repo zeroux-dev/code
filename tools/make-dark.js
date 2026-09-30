@@ -69,12 +69,16 @@ for (const file of ['styles.css', 'studio.css']) {
   });
   root.walkDecls(d => {
     if (d.parent.parent && d.parent.parent.type === 'atrule' && /keyframes/.test(d.parent.parent.name)) return;
-    if (d.prop === 'box-shadow') return;
     const r = role(d.prop);
-    if (r === 'other') return;
+    // dark.css carries colour only; layout, motion and shadows stay in the base sheets
+    if (r === 'other' || d.prop === 'box-shadow' || !/#|\bwhite\b|var\(/i.test(d.value)) {
+      if (!d.prop.startsWith('--') && d.prop !== 'color-scheme') d.remove();
+      return;
+    }
     d.value = d.value.replace(/\bwhite\b/gi, '#ffffff').replace(HEX, m => map(m, r));
   });
-  // drop rules that changed nothing is not needed; keep the output simple
+  root.walkRules(rule => { if (!rule.nodes.length) rule.remove(); });
+  root.walkAtRules(a => { if (/keyframes/.test(a.name) || !a.nodes || !a.nodes.length) a.remove(); });
   out += root.toString() + '\n';
 }
 fs.writeFileSync('dark.css', out);
