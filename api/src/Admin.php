@@ -104,7 +104,8 @@ final class Admin
             'telegram' => $probe('https://api.telegram.org/'),
             'smtp' => $smtp,
             'storageWritable' => is_writable(dirname(rtrim((string)Config::get('storage_dir'), '/'))) || is_writable((string)Config::get('storage_dir')),
-            'configured' => ['mail' => Mailer::ready(), 'instagram' => Instagram::ready(), 'zarinpal' => (bool)Config::get('zarinpal.merchant_id'), 'telegram' => (bool)Config::get('telegram.bot_token')],
+            'relay' => Config::get('relay.url') ? $probe(rtrim((string)Config::get('relay.url'), '/') . '/health') : ['ok' => false, 'error' => 'not configured'],
+            'configured' => ['relay' => (bool)Config::get('relay.url'), 'mail' => Mailer::ready(), 'instagram' => Instagram::ready(), 'zarinpal' => (bool)Config::get('zarinpal.merchant_id'), 'telegram' => (bool)Config::get('telegram.bot_token')],
         ];
     }
 }

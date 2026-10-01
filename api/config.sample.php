@@ -55,6 +55,13 @@ return [
         'graph'        => 'https://graph.instagram.com/v23.0',
     ],
 
+    // Cloudflare Worker relay (relay/worker.js) for hosts in Iran that cannot reach Meta/Telegram.
+    // Leave url empty when the server can reach graph.instagram.com directly.
+    'relay' => [
+        'url' => '',          // e.g. https://repol-relay.<your-subdomain>.workers.dev
+        'key' => '',          // same value as the Worker's RELAY_KEY secret
+    ],
+
     // Optional: Telegram bot for admin reports (new orders, payments, daily stats).
     'telegram' => [
         'bot_token' => '',

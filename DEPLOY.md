@@ -75,3 +75,20 @@ php -S localhost:8100 api/tests/dev-router.php
 php -S localhost:8101 api/tests/mock-graph.php   # اینستاگرام ساختگی
 php api/tests/smoke.php                           # ۶۴ تست سرتاسری
 ```
+
+## ۱۱. پل Cloudflare برای هاست ایران (وقتی «اینستاگرام: بسته است»)
+هاست ایران به `graph.instagram.com` و `api.telegram.org` دسترسی ندارد. یک Cloudflare Worker رایگان این درخواست‌ها را رد می‌کند.
+
+1. در [dash.cloudflare.com](https://dash.cloudflare.com) ثبت‌نام کن (رایگان).
+2. **Workers & Pages** → **Create** → **Create Worker** (Start with Hello World) → نام: `repol-relay` → **Deploy**.
+3. **Edit code** → کل کد را پاک کن و محتوای فایل `relay/worker.js` را جایش بگذار → **Deploy**.
+4. **Settings → Variables and Secrets → Add**:
+   - `RELAY_KEY` از نوع **Secret** = یک رمز تصادفی طولانی
+   - `SITE` از نوع **Text** = `https://repol.ir`
+5. آدرس Worker (مثل `https://repol-relay.NAME.workers.dev`) را در `config.php` بگذار:
+   ```php
+   'relay' => ['url' => 'https://repol-relay.NAME.workers.dev', 'key' => 'همان RELAY_KEY'],
+   ```
+6. پنل مدیر → «بررسی اتصال‌های سرور»: «پل Cloudflare» و «اینستاگرام از طریق پل» باید سبز باشند.
+7. اگر Meta نتوانست به سایت وصل شود (Webhook تأیید نشد)، در تنظیمات Webhook اپ Meta به‌جای آدرس سایت این را بگذار:
+   `https://repol-relay.NAME.workers.dev/hook/instagram`

@@ -223,7 +223,7 @@
       try {
         const d = await api('/admin/diagnostics');
         const row = (t, r, hint) => `<div class="settings-row"><span>${t}</span>${r.ok ? '<span class="chip green">در دسترس</span>' : `<span class="chip orange">${esc(hint)}</span>`}</div>`;
-        dialog(`${dialogHead('سلامت سرور', 'PHP ' + esc(d.php))}<div class="diag">${row('اینستاگرام (Graph API)', d.instagram, 'بسته است — هاست خارج از ایران لازم است')}${row('زرین‌پال', d.zarinpal, 'در دسترس نیست')}${row('شبکه‌ی TRON', d.trongrid, 'در دسترس نیست')}${row('تلگرام', d.telegram, 'در دسترس نیست')}${row('سرور ایمیل (SMTP)', d.smtp, d.configured.mail ? 'اتصال برقرار نشد' : 'تنظیم نشده')}${row('پوشه‌ی فایل‌ها', { ok: d.storageWritable }, 'قابل نوشتن نیست')}${Object.entries(d.extensions).map(([k, v]) => row('افزونه‌ی ' + k, { ok: v }, 'نصب نیست')).join('')}</div>`, true);
+        dialog(`${dialogHead('سلامت سرور', 'PHP ' + esc(d.php))}<div class="diag">${d.configured.relay ? row('پل Cloudflare', d.relay, 'پل در دسترس نیست') : ''}${row('اینستاگرام (Graph API)' + (d.configured.relay ? ' از طریق پل' : ''), d.instagram, d.configured.relay ? 'از طریق پل هم بسته است' : 'بسته است — پل Cloudflare لازم است')}${row('تلگرام' + (d.configured.relay ? ' از طریق پل' : ''), d.telegram, 'در دسترس نیست')}${row('زرین‌پال', d.zarinpal, 'در دسترس نیست')}${row('شبکه‌ی TRON', d.trongrid, 'در دسترس نیست')}${row('سرور ایمیل (SMTP)', d.smtp, d.configured.mail ? 'اتصال برقرار نشد' : 'تنظیم نشده')}${row('پوشه‌ی فایل‌ها', { ok: d.storageWritable }, 'قابل نوشتن نیست')}${Object.entries(d.extensions).map(([k, v]) => row('افزونه‌ی ' + k, { ok: v }, 'نصب نیست')).join('')}</div>`, true);
       } catch (ex) { toast(ex.message); }
       return;
     }

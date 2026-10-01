@@ -206,8 +206,21 @@ final class Http
     }
 
     /** Outbound HTTP: returns [status, decoded json|null, raw]. */
+    /** Hosts the Iranian server cannot reach directly; they go through the Cloudflare relay when configured. */
+    private const RELAYED = ['graph.instagram.com' => 'graph', 'api.instagram.com' => 'api', 'api.telegram.org' => 'tg'];
+
+    public static function relayed(string $url): bool
+    {
+        return (bool)Config::get('relay.url') && isset(self::RELAYED[parse_url($url, PHP_URL_HOST) ?? '']);
+    }
+
     public static function request(string $method, string $url, mixed $payload, array $headers, int $timeout, bool $form = false): array
     {
+        if (self::relayed($url)) {
+            $u = parse_url($url);
+            $url = rtrim((string)Config::get('relay.url'), '/') . '/' . self::RELAYED[$u['host']] . ($u['path'] ?? '/') . (isset($u['query']) ? '?' . $u['query'] : '');
+            $headers[] = 'X-Relay-Key: ' . Config::get('relay.key');
+        }
         $ch = curl_init($url);
         $h = array_merge(['Accept: application/json'], $headers);
         if ($payload !== null) {
